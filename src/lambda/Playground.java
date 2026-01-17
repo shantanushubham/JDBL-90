@@ -2,8 +2,7 @@ package lambda;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Playground {
 
@@ -14,5 +13,10 @@ public class Playground {
         int ans = list.stream().collect(() -> list.size(), (el1, el2) -> System.out.println(el1 + el2),
                 (el1, el2) -> System.out.println(el1 + el2));
         System.out.println(ans);
-    }
+
+        AtomicInteger count = new AtomicInteger(10);
+
+        Runnable r = () -> {
+            System.out.println(count.incrementAndGet());
+        };}
 }
