@@ -1,0 +1,78 @@
+Spring is a lightweight, open-source Java framework used to build enterprise-level applications.
+Its core idea is to make Java development simpler, modular, testable, and loosely coupled.
+
+Before Sping, there were a few problems:
+- Heavy tight coupling between classes
+- Hard-to-test code
+- Heavy frameworks like EJB was used
+
+Spring solves this by:
+- Managing objects (beans) for you
+- Injecting dependencies automatically
+- Providing infrastructure features like:
+    * Transaction Management
+    * Security
+    * MVC
+    * Data Access (JDBC, JPA, Hibernate)
+
+Inversion of Control (IoC):
+It means: "You don't create and manage your dependencies - the framework does it for you."
+
+Normally, you control object creation and you decide when and how dependencies are wired.
+With IoC, a container/framewrok manages object creation, lifecycle and wiring.
+
+Dependency Injection (DI):
+DI is a design pattern used to implement IoC.
+    - Dependencies are provided (injected) from outside rather than created inside the class.
+
+    So:
+        IoC = Principle (what)
+        DI = Technique (how)
+
+Bean
+It is an object of a class. In Spring, a bean is simply an object that Spring creates
+and manages for you. You don't create the object.
+
+Bean Lifecycle and Scopes
+It means the steps that a bean goes through from creation to destruction.
+
+1. Bean is created
+    Spring creates a bean using
+        * constructor
+        * factory method
+
+2. Dependencies are injected (autowiring)
+    Spring injects required dependencies.
+
+3. Initialisation callbacks
+    You can look into this phase into 3 ways:
+    - @PostConstruct
+    - InitializingBean (after properties are set)
+    - @Bean(initMethod = "init")
+
+4. Bean is ready to use
+    Bean is now fully ready to be used by the application
+
+5. Destruction callbacks (when app shuts down)
+    You can look into this phase into 3 ways:
+    - @PreDestory
+    - DisposableBean (destroy)
+    - @Bean(destroyMethod = "cleanup")
+
+Advantages of Spring Boot over Traditional Spring
+Spring Boot is a framework built on top of Spring that simplifies application development.
+It does that by providing auto-configuration, embedded servers and prod-ready features.
+
+    Traditional Spring                      Spring Boot
+1. XML heavy config                     Annotation based
+2. Manual setup                         Auto-configuration
+3. External Server                      Embedded server
+4. Time consuming                       Faster development
+5. Complex Packaging                    Simple JAR
+
+
+CRUD
+C - Create
+R - Read/ Retrieve
+U - Update
+D - Delete

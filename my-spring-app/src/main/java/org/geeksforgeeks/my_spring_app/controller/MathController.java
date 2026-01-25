@@ -9,6 +9,7 @@ public class MathController {
 
     @GetMapping("/add")
     public int add(@RequestParam int a, @RequestParam int b) {
+        System.out.println(System.getenv("name"));
         return a + b;
     }
 

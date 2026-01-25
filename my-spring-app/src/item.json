@@ -1,0 +1,17 @@
+[ {
+  "id" : 1,
+  "name" : "Nykaa Lipstick",
+  "price" : 550.0
+}, {
+  "id" : 2,
+  "name" : "Maybelline Lipstick",
+  "price" : 300.0
+}, {
+  "id" : 3,
+  "name" : "Lakmé Lipstick",
+  "price" : 450.0
+}, {
+  "id" : 4,
+  "name" : "Dot&Key Lipstick",
+  "price" : 450.0
+} ]

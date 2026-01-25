@@ -1,3 +1,6 @@
 spring:
   application:
     name: My Spring App
+
+my-key:
+  my-value: false
