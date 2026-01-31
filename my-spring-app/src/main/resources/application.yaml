@@ -4,3 +4,7 @@ spring:
 
 my-key:
   my-value: false
+
+logging:
+  level:
+    root: INFO
