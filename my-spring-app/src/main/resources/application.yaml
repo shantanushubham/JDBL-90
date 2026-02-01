@@ -1,6 +1,11 @@
 spring:
   application:
     name: My Spring App
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mydb
+    username: myuser
+    password: mypassword
+    driver-class-name: org.postgresql.Driver
 
 my-key:
   my-value: false
