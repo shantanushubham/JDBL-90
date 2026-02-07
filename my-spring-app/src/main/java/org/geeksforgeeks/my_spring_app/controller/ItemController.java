@@ -1,11 +1,14 @@
 package org.geeksforgeeks.my_spring_app.controller;
 
+import org.aspectj.weaver.ast.Not;
 import org.geeksforgeeks.my_spring_app.annotations.LogExecution;
+import org.geeksforgeeks.my_spring_app.exceptions.NotFoundException;
 import org.geeksforgeeks.my_spring_app.jdbc.MyJDBC;
-import org.geeksforgeeks.my_spring_app.models.Item;
+import org.geeksforgeeks.my_spring_app.entities.Item;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.File;
@@ -34,28 +37,18 @@ public class ItemController {
     }
 
     @GetMapping("/read/{id}")
-    public Item readItemById(@PathVariable int id) {
-        List<Item> itemList = this.readItems().stream()
-                .filter(el -> el.getId() == id)
-                .toList();
-        if (itemList.isEmpty()) {
-            return null;
+    public ResponseEntity<?> readItemById(@PathVariable int id) {
+        try {
+            Item item = this.myJDBC.getItemById(id);
+            return ResponseEntity.ok(item);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
         }
-        return itemList.get(0);
     }
+
 
     @PostMapping("/add")
     public Item addItem(@RequestBody Item item) {
-        List<Item> itemList = this.readItems();
-        boolean isDuplicateItemId = itemList.stream()
-                .anyMatch(el -> el.getId() == item.getId());
-        if (isDuplicateItemId) {
-            return null;
-        } else {
-            itemList.add(item);
-            objectMapper.writerWithDefaultPrettyPrinter()
-                    .writeValue(file, itemList);
-            return item;
-        }
+        return this.myJDBC.addItem(item);
     }
 }

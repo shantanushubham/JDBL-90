@@ -1,6 +1,6 @@
 package org.geeksforgeeks.my_spring_app.mappers;
 
-import org.geeksforgeeks.my_spring_app.models.Item;
+import org.geeksforgeeks.my_spring_app.entities.Item;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

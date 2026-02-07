@@ -5,6 +5,7 @@
 @Component
 @Controller
 @RestController
+@Repository
 
 @Bean
 @Configuration

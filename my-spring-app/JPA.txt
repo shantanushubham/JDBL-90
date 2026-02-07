@@ -1,0 +1,22 @@
+JPA - Java Persistence API
+
+It is a specification, not an implementation.
+- Defined by Java EE (Jakarta)
+- Describes how Java objects should be persisted in the DB
+- Provides:
+    * Annotations
+    * Interfaces
+    * Rules for ORM
+
+JPA does not talk to the DB.
+
+Before JPA:
+    - Every ORM had its own API
+    - Switching frameworks was very painful
+
+JPA Standardises:
+1. How entities are defined
+2. Hoe persistence operations are performed
+
+
+Database -> Postgres Driver -> Hibernate[ORM] (using JPA) -> Spring App
