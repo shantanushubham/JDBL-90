@@ -1,20 +1,19 @@
-package org.geeksforgeeks.my_spring_app.jdbc;
+package org.geeksforgeeks.my_spring_app.service;
 
 import org.geeksforgeeks.my_spring_app.entities.Item;
 import org.geeksforgeeks.my_spring_app.repository.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import java.sql.*;
 import java.util.List;
 
-@Component
-public class MyJDBC {
+@Service
+public class ItemService {
 
     private final ItemRepository itemRepository;
 
     @Autowired
-    public MyJDBC(ItemRepository itemRepository) {
+    public ItemService(ItemRepository itemRepository) {
         this.itemRepository = itemRepository;
     }
 
@@ -31,5 +30,4 @@ public class MyJDBC {
     }
 }
 
-// ddl - data definition language // CREATE, ALTER, DROP, TRUNCATE, RENAME
-// dml - data manipulation language // INSERT, SELECT, UPDATE, DELETE
+// Controller -> Service -> Repository -> DB

@@ -7,6 +7,7 @@ import org.geeksforgeeks.my_spring_app.repository.jpa.ItemJPARepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -33,5 +34,13 @@ public class ItemRepository {
 
     public void deleteById(int id) {
         this.itemJPARepository.deleteById(id);
+    }
+
+    public List<Item> getItemsByIds(Collection<Integer> ids) {
+        return this.itemJPARepository.findByIdIn(ids);
+    }
+
+    public List<Item> saveAll(List<Item> itemList) {
+        return this.itemJPARepository.saveAll(itemList);
     }
 }

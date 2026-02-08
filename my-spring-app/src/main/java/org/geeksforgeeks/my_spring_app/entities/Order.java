@@ -1,20 +1,43 @@
 package org.geeksforgeeks.my_spring_app.entities;
 
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.UuidGenerator;
+
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 
 @Entity
+@Table(name = "orders")
 public class Order {
 
-    @EmbeddedId
-    private OrderKey orderKey;
+    @Id
+    @UuidGenerator
+    @Column(name = "id", nullable = false)
+    private UUID id;
 
-}
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            mappedBy = "order"
+    )
+    // Homework to read about cascadeType & generation strategy
+    private List<OrderItem> itemList;
 
-@Embeddable
-class OrderKey {
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
 
-    private Long orderId;
-    private Long itemId;
+    @Column(name = "order_date", nullable = false)
+    private Date orderDate = new Date();
+
+    private Double orderTotal;
 }
