@@ -93,4 +93,19 @@ public class OrderController {
         log.info("Order deleted successfully: {}", id);
         return ResponseEntity.noContent().build();
     }
+
+    /**
+     * Cancel an order by ID.
+     * This will restore inventory and mark the order as CANCELLED.
+     * 
+     * @param id The order ID (UUID).
+     * @return The cancelled order.
+     */
+    @PutMapping("/{id}/cancel")
+    public ResponseEntity<Order> cancelOrder(@PathVariable UUID id) {
+        log.info("Request to cancel order with ID: {}", id);
+        Order cancelledOrder = this.orderService.cancelOrder(id);
+        log.info("Order cancelled successfully: {}", id);
+        return ResponseEntity.ok(cancelledOrder);
+    }
 }

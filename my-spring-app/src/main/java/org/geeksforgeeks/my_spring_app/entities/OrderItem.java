@@ -33,4 +33,3 @@ public class OrderItem {
     @Column(name = "quantity", nullable = false)
     private int quantity;
 }
-// {2, 4}

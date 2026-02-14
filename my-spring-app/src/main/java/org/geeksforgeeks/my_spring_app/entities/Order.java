@@ -40,4 +40,8 @@ public class Order {
     private Date orderDate = new Date();
 
     private Double orderTotal;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private OrderStatus status = OrderStatus.ORDERED;
 }

@@ -4,7 +4,9 @@ import org.geeksforgeeks.my_spring_app.dto.CreateOrderRequest;
 import org.geeksforgeeks.my_spring_app.entities.Item;
 import org.geeksforgeeks.my_spring_app.entities.Order;
 import org.geeksforgeeks.my_spring_app.entities.OrderItem;
+import org.geeksforgeeks.my_spring_app.entities.OrderStatus;
 import org.geeksforgeeks.my_spring_app.exceptions.InsufficientStockException;
+import org.geeksforgeeks.my_spring_app.exceptions.NotFoundException;
 import org.geeksforgeeks.my_spring_app.repository.ItemRepository;
 import org.geeksforgeeks.my_spring_app.repository.OrderRepository;
 import org.geeksforgeeks.my_spring_app.repository.UserRepository;
@@ -33,7 +35,7 @@ public class OrderService {
     }
 
     @Transactional
-    public synchronized Order addOrderFromRequest(CreateOrderRequest createOrderRequest) {
+    public Order addOrderFromRequest(CreateOrderRequest createOrderRequest) {
         Order order = new Order();
         List<Integer> itemIds = createOrderRequest.getItems().stream().map(el -> el.getItemId()).toList();
         List<Item> itemList = this.itemRepository.getItemsByIds(itemIds);
@@ -48,6 +50,7 @@ public class OrderService {
 
         order.setItemList(orderItemList);
         order.setUser(this.userRepository.getUserById(createOrderRequest.getUserId()));
+        order.setStatus(OrderStatus.ORDERED);
         Order savedOrder =  this.addOrder(order);
         this.itemRepository.saveAll(itemList);
         return savedOrder;
@@ -74,4 +77,34 @@ public class OrderService {
                 .sum();
         order.setOrderTotal(total);
     }
+
+    @Transactional
+    public synchronized Order cancelOrder(UUID orderId) {
+        Order order = this.orderRepository.getOrderById(orderId);
+        
+        if (order == null) {
+            throw new NotFoundException(Order.class, "id", orderId);
+        }
+        
+        if (order.getStatus() == OrderStatus.CANCELLED) {
+            throw new IllegalStateException("Order is already cancelled");
+        }
+        
+        // Restore inventory for each item in the order
+        List<Item> itemsToUpdate = order.getItemList().stream()
+                .map(orderItem -> {
+                    Item item = orderItem.getItem();
+                    item.changeCount(orderItem.getQuantity()); // Add back the quantity
+                    return item;
+                })
+                .toList();
+        
+        // Update order status
+        order.setStatus(OrderStatus.CANCELLED);
+        
+        // Save changes
+        this.itemRepository.saveAll(itemsToUpdate);
+        return this.orderRepository.saveOrder(order);
+    }
 }
+

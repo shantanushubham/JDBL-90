@@ -1,6 +1,5 @@
 package org.geeksforgeeks.my_spring_app.repository;
 
-import org.aspectj.weaver.ast.Or;
 import org.geeksforgeeks.my_spring_app.entities.Order;
 import org.geeksforgeeks.my_spring_app.exceptions.NotFoundException;
 import org.geeksforgeeks.my_spring_app.repository.jpa.OrderJpaRepository;
