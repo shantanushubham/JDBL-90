@@ -39,8 +39,7 @@ public class OrderItemService {
                 .orElseThrow(() -> new RuntimeException("OrderItem not found with id: " + id));
         
         orderItem.setQuantity(orderItemDetails.getQuantity());
-        orderItem.setPrice(orderItemDetails.getPrice());
-        
+
         return orderItemRepository.save(orderItem);
     }
 

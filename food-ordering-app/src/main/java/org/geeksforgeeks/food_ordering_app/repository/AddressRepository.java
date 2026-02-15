@@ -2,6 +2,7 @@ package org.geeksforgeeks.food_ordering_app.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.geeksforgeeks.food_ordering_app.entities.Address;
+import org.geeksforgeeks.food_ordering_app.exceptions.NotFoundException;
 import org.geeksforgeeks.food_ordering_app.repository.jpa.AddressJpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -19,12 +20,13 @@ public class AddressRepository {
         return addressJpaRepository.save(address);
     }
 
-    public Optional<Address> findById(UUID id) {
-        return addressJpaRepository.findById(id);
+    public Address findById(UUID id) {
+        return addressJpaRepository.findById(id).orElseThrow(() ->
+                new NotFoundException(Address.class, "id", id));
     }
 
-    public List<Address> findAll() {
-        return addressJpaRepository.findAll();
+    public List<Address> findAllByCustomer(UUID customerId) {
+        return addressJpaRepository.findByCustomer_Id(customerId);
     }
 
     public void delete(Address address) {

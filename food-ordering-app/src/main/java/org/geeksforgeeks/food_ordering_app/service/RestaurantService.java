@@ -18,6 +18,9 @@ public class RestaurantService {
 
     @Transactional
     public Restaurant createRestaurant(Restaurant restaurant) {
+        if (restaurant.getAddress() != null) {
+            restaurant.getAddress().setRestaurant(restaurant);
+        }
         return restaurantJpaRepository.save(restaurant);
     }
 

@@ -35,7 +35,7 @@ public class Order {
     private Address deliveryAddress;
 
     @Column(name = "order_date")
-    private LocalDateTime orderDate;
+    private LocalDateTime orderDate = LocalDateTime.now();
 
     @Column(name = "total_amount")
     private Double totalAmount;

@@ -2,6 +2,7 @@ package org.geeksforgeeks.food_ordering_app.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.geeksforgeeks.food_ordering_app.entities.Customer;
+import org.geeksforgeeks.food_ordering_app.exceptions.NotFoundException;
 import org.geeksforgeeks.food_ordering_app.repository.jpa.CustomerJpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -19,8 +20,8 @@ public class CustomerRepository {
         return customerJpaRepository.save(customer);
     }
 
-    public Optional<Customer> findById(UUID id) {
-        return customerJpaRepository.findById(id);
+    public Customer findById(UUID id) {
+        return customerJpaRepository.findById(id).orElseThrow(() -> new NotFoundException(Customer.class, "id", id));
     }
 
     public Optional<Customer> findByEmail(String email) {

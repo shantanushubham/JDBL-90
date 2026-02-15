@@ -1,5 +1,8 @@
 package org.geeksforgeeks.food_ordering_app.entities;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,8 +32,14 @@ public class MenuItem {
     @Column(name = "description")
     private String description;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
+
+    @JsonGetter(value = "restaurantId")
+    public UUID getRestaurantId() {
+        return this.restaurant.getId();
+    }
 
 }

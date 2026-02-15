@@ -5,6 +5,7 @@ import org.geeksforgeeks.food_ordering_app.entities.MenuItem;
 import org.geeksforgeeks.food_ordering_app.repository.jpa.MenuItemJpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,12 +20,20 @@ public class MenuItemRepository {
         return menuItemJpaRepository.save(menuItem);
     }
 
+    public List<MenuItem> saveAll(List<MenuItem> menuItemList) {
+        return this.menuItemJpaRepository.saveAll(menuItemList);
+    }
+
     public Optional<MenuItem> findById(UUID id) {
         return menuItemJpaRepository.findById(id);
     }
 
     public List<MenuItem> findAll() {
         return menuItemJpaRepository.findAll();
+    }
+
+    public List<MenuItem> findAllByIdList(Collection<UUID> uuids) {
+        return this.menuItemJpaRepository.findAllById(uuids);
     }
 
     public List<MenuItem> findByRestaurantId(UUID restaurantId) {

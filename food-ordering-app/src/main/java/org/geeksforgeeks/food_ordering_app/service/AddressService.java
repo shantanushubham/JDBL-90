@@ -2,7 +2,10 @@ package org.geeksforgeeks.food_ordering_app.service;
 
 import lombok.RequiredArgsConstructor;
 import org.geeksforgeeks.food_ordering_app.entities.Address;
-import org.geeksforgeeks.food_ordering_app.repository.jpa.AddressJpaRepository;
+import org.geeksforgeeks.food_ordering_app.entities.Customer;
+import org.geeksforgeeks.food_ordering_app.exceptions.NotFoundException;
+import org.geeksforgeeks.food_ordering_app.repository.AddressRepository;
+import org.geeksforgeeks.food_ordering_app.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,39 +17,40 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AddressService {
 
-    private final AddressJpaRepository addressJpaRepository;
+    private final AddressRepository addressRepository;
+    private final CustomerRepository customerRepository;
 
     @Transactional
-    public Address createAddress(Address address) {
-        return addressJpaRepository.save(address);
+    public Address createAddress(UUID customerId, Address address) {
+        Customer customer = this.customerRepository.findById(customerId);
+        address.setCustomer(customer);
+        return this.addressRepository.save(address);
     }
 
-    public Optional<Address> getAddressById(UUID id) {
-        return addressJpaRepository.findById(id);
+    public Address getAddressById(UUID id) {
+        return this.addressRepository.findById(id);
     }
 
-    public List<Address> getAllAddresses() {
-        return addressJpaRepository.findAll();
+    public List<Address> getAllAddressesForCustomer(UUID customerId) {
+        return this.addressRepository.findAllByCustomer(customerId);
     }
 
     @Transactional
     public Address updateAddress(UUID id, Address addressDetails) {
-        Address address = addressJpaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Address not found with id: " + id));
-        
+        Address address = addressRepository.findById(id);
+
         address.setStreet(addressDetails.getStreet());
         address.setCity(addressDetails.getCity());
         address.setState(addressDetails.getState());
         address.setZipCode(addressDetails.getZipCode());
         address.setCountry(addressDetails.getCountry());
-        
-        return addressJpaRepository.save(address);
+
+        return addressRepository.save(address);
     }
 
     @Transactional
     public void deleteAddress(UUID id) {
-        Address address = addressJpaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Address not found with id: " + id));
-        addressJpaRepository.delete(address);
+        Address address = addressRepository.findById(id);
+        addressRepository.delete(address);
     }
 }

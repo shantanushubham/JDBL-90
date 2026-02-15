@@ -1,5 +1,6 @@
 package org.geeksforgeeks.food_ordering_app.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,9 +28,11 @@ public class Restaurant {
     @OneToOne(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     private Address address;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuItem> menuItems = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
 
