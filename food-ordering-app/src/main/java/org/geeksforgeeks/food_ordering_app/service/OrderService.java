@@ -3,24 +3,32 @@ package org.geeksforgeeks.food_ordering_app.service;
 import lombok.RequiredArgsConstructor;
 import org.geeksforgeeks.food_ordering_app.dto.request.OrderCreateRequest;
 import org.geeksforgeeks.food_ordering_app.dto.request.OrderItemCreateRequest;
+import org.geeksforgeeks.food_ordering_app.dto.response.MostOrderedItemResponse;
 import org.geeksforgeeks.food_ordering_app.entities.*;
 import org.geeksforgeeks.food_ordering_app.repository.*;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.RedisConnectionFailureException;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.databind.ObjectMapper;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
     private final CustomerRepository customerRepository;
     private final RestaurantRepository restaurantRepository;
     private final AddressRepository addressRepository;
     private final MenuItemRepository menuItemRepository;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private final ObjectMapper objectMapper;
 
     public Order createOrder(OrderCreateRequest orderCreateRequest) {
         Order order = new Order();
@@ -64,8 +72,8 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    public Optional<Order> getOrderById(UUID id) {
-        return orderRepository.findById(id);
+    public Order getOrderById(UUID id) {
+        return this.orderRepository.findById(id);
     }
 
     public List<Order> getAllOrders() {
@@ -80,10 +88,65 @@ public class OrderService {
         return orderRepository.findByRestaurantId(restaurantId);
     }
 
+    /**
+     * Returns the most ordered menu item for the given restaurant in the last 30 days,
+     * with the total quantity ordered.
+     */
+    @Cacheable("restaurant")
+    public Optional<MostOrderedItemResponse> getMostOrderedItemInLast30Days(UUID restaurantId) {
+        LocalDateTime since = LocalDateTime.now().minusDays(30);
+        List<Order> orders = this.orderRepository.findByRestaurantIdAndOrderDateAfter(restaurantId, since);
+
+        // Count quantities by menu item ID
+        Map<UUID, Integer> quantityByMenuItem = new HashMap<>();
+        for (Order order : orders) {
+            for (OrderItem orderItem : order.getOrderItems()) {
+                UUID menuItemId = orderItem.getMenuItem().getId();
+                int quantity = orderItem.getQuantity() != null ? orderItem.getQuantity() : 0;
+                quantityByMenuItem.put(menuItemId, quantityByMenuItem.getOrDefault(menuItemId, 0) + quantity);
+            }
+        }
+
+        // Find menu item with maximum quantity
+        UUID topMenuItemId = null;
+        int maxQuantity = 0;
+        for (Map.Entry<UUID, Integer> entry : quantityByMenuItem.entrySet()) {
+            if (entry.getValue() > maxQuantity) {
+                maxQuantity = entry.getValue();
+                topMenuItemId = entry.getKey();
+            }
+        }
+
+        if (topMenuItemId == null) {
+            return Optional.empty();
+        }
+
+        Optional<MenuItem> menuItem = this.menuItemRepository.findById(topMenuItemId);
+        if (menuItem.isEmpty()) {
+            return Optional.empty();
+        }
+        MostOrderedItemResponse response = MostOrderedItemResponse.from(menuItem.get(), maxQuantity);
+        this.redisTemplate.opsForValue().set("restaurant:" + restaurantId, response);
+        return Optional.of(response);
+    }
+
+    /**
+     * Same as getMostOrderedItemInLast30Days but computed entirely in the DB (single native query).
+     * For demonstration: one round-trip, no in-memory aggregation.
+     */
+    public Optional<MostOrderedItemResponse> getMostOrderedItemInLast30DaysFromDb(UUID restaurantId) {
+        LocalDateTime since = LocalDateTime.now().minusDays(30);
+        List<Object[]> rows = orderItemRepository.findMostOrderedItemInLast30DaysNative(restaurantId, since);
+        if (rows == null || rows.isEmpty()) {
+            return Optional.empty();
+        }
+        MostOrderedItemResponse response = MostOrderedItemResponse.fromNativeRow(rows.get(0));
+        return response != null ? Optional.of(response) : Optional.empty();
+    }
+
     @Transactional
     public Order updateOrder(UUID id, Order orderDetails) {
-        Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found with id: " + id));
+        Order order = orderRepository.findById(id);
 
         order.setStatus(orderDetails.getStatus());
         order.setTotalAmount(orderDetails.getTotalAmount());
@@ -93,8 +156,7 @@ public class OrderService {
 
     @Transactional
     public void deleteOrder(UUID id) {
-        Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found with id: " + id));
+        Order order = orderRepository.findById(id);
         orderRepository.delete(order);
     }
 

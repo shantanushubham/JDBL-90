@@ -2,6 +2,7 @@ package org.geeksforgeeks.food_ordering_app.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.geeksforgeeks.food_ordering_app.dto.request.OrderCreateRequest;
+import org.geeksforgeeks.food_ordering_app.dto.response.MostOrderedItemResponse;
 import org.geeksforgeeks.food_ordering_app.entities.Order;
 import org.geeksforgeeks.food_ordering_app.mapper.OrderMapper;
 import org.geeksforgeeks.food_ordering_app.service.OrderService;
@@ -33,9 +34,7 @@ public class OrderController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getOrderById(@PathVariable UUID id) {
         try {
-            return this.orderService.getOrderById(id)
-                    .map(order -> new ResponseEntity<>(order, HttpStatus.OK))
-                    .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+            return ResponseEntity.ok(this.orderService.getOrderById(id));
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -66,6 +65,17 @@ public class OrderController {
         try {
             List<Order> orders = this.orderService.getOrdersByRestaurantId(restaurantId);
             return new ResponseEntity<>(orders, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/restaurant/{restaurantId}/most-ordered-item")
+    public ResponseEntity<?> getMostOrderedItem(@PathVariable UUID restaurantId) {
+        try {
+            return this.orderService.getMostOrderedItemInLast30Days(restaurantId)
+                    .map(ResponseEntity::<MostOrderedItemResponse>ok)
+                    .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }

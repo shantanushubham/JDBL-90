@@ -2,9 +2,11 @@ package org.geeksforgeeks.food_ordering_app.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.geeksforgeeks.food_ordering_app.entities.Order;
+import org.geeksforgeeks.food_ordering_app.exceptions.NotFoundException;
 import org.geeksforgeeks.food_ordering_app.repository.jpa.OrderJpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,8 +21,9 @@ public class OrderRepository {
         return orderJpaRepository.save(order);
     }
 
-    public Optional<Order> findById(UUID id) {
-        return orderJpaRepository.findById(id);
+    public Order findById(UUID id) {
+        return this.orderJpaRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(Order.class, "id", id));
     }
 
     public List<Order> findAll() {
@@ -33,6 +36,10 @@ public class OrderRepository {
 
     public List<Order> findByRestaurantId(UUID restaurantId) {
         return orderJpaRepository.findByRestaurantId(restaurantId);
+    }
+
+    public List<Order> findByRestaurantIdAndOrderDateAfter(UUID restaurantId, LocalDateTime since) {
+        return orderJpaRepository.findByRestaurantIdAndOrderDateAfter(restaurantId, since);
     }
 
     public void delete(Order order) {

@@ -60,6 +60,18 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -75,6 +87,96 @@
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.12</version>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+						<configuration>
+							<destFile>${project.build.directory}/jacoco.exec</destFile>
+						</configuration>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<dataFile>${project.build.directory}/jacoco.exec</dataFile>
+							<outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
+							<excludes>
+								<exclude>**/FoodOrderingAppApplication.class</exclude>
+								<exclude>**/dto/**</exclude>
+								<exclude>**/entities/**</exclude>
+								<exclude>**/exceptions/**</exclude>
+								<exclude>**/repository/**</exclude>
+							</excludes>
+						</configuration>
+					</execution>
+					<execution>
+						<id>check</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<dataFile>${project.build.directory}/jacoco.exec</dataFile>
+							<excludes>
+								<!-- Main application entry point -->
+								<exclude>**/FoodOrderingAppApplication.class</exclude>
+								<!-- DTOs and entities (getters/setters, little logic) -->
+								<exclude>**/dto/**</exclude>
+								<exclude>**/entities/**</exclude>
+								<!-- Simple exception classes -->
+								<exclude>**/exceptions/**</exclude>
+								<!-- Repository wrappers and JPA interfaces -->
+								<exclude>**/repository/**</exclude>
+							</excludes>
+							<rules>
+								<rule>
+									<element>PACKAGE</element>
+									<includes>**/service/**</includes>
+									<limits>
+										<limit>
+											<counter>LINE</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>1.00</minimum>
+										</limit>
+									</limits>
+								</rule>
+								<rule>
+									<element>PACKAGE</element>
+									<includes>**/mapper/**</includes>
+									<limits>
+										<limit>
+											<counter>LINE</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>1.00</minimum>
+										</limit>
+									</limits>
+								</rule>
+								<rule>
+									<element>PACKAGE</element>
+									<includes>**/controllers/**</includes>
+									<limits>
+										<limit>
+											<counter>LINE</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.85</minimum>
+										</limit>
+									</limits>
+								</rule>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

@@ -5,6 +5,7 @@ import org.geeksforgeeks.food_ordering_app.entities.OrderItem;
 import org.geeksforgeeks.food_ordering_app.repository.jpa.OrderItemJpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -41,5 +42,13 @@ public class OrderItemRepository {
 
     public boolean existsById(UUID id) {
         return orderItemJpaRepository.existsById(id);
+    }
+
+    /**
+     * DB-only: most ordered menu item for restaurant in the given time window.
+     * Returns one row: [menu_item_id, name, price, description, total_quantity].
+     */
+    public List<Object[]> findMostOrderedItemInLast30DaysNative(UUID restaurantId, LocalDateTime since) {
+        return orderItemJpaRepository.findMostOrderedItemInLast30DaysNative(restaurantId, since);
     }
 }

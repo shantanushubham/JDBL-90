@@ -1,8 +1,7 @@
 package org.geeksforgeeks.food_ordering_app.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
@@ -12,6 +11,9 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 
 @Entity
 @Table(name = "orders")
