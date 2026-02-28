@@ -24,8 +24,8 @@ public class CustomerRepository {
         return customerJpaRepository.findById(id).orElseThrow(() -> new NotFoundException(Customer.class, "id", id));
     }
 
-    public Optional<Customer> findByEmail(String email) {
-        return customerJpaRepository.findByEmail(email);
+    public Customer findByEmail(String email) {
+        return customerJpaRepository.findByEmail(email).orElseThrow(() -> new NotFoundException(Customer.class, "email", email));
     }
 
     public List<Customer> findAll() {

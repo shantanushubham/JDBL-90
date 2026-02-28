@@ -1,6 +1,7 @@
 package org.geeksforgeeks.food_ordering_app.service;
 
 import lombok.RequiredArgsConstructor;
+import org.geeksforgeeks.food_ordering_app.auth.UserContextHandler;
 import org.geeksforgeeks.food_ordering_app.dto.request.OrderCreateRequest;
 import org.geeksforgeeks.food_ordering_app.dto.request.OrderItemCreateRequest;
 import org.geeksforgeeks.food_ordering_app.dto.response.MostOrderedItemResponse;
@@ -10,6 +11,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.databind.ObjectMapper;
@@ -23,16 +25,15 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
-    private final CustomerRepository customerRepository;
     private final RestaurantRepository restaurantRepository;
     private final AddressRepository addressRepository;
     private final MenuItemRepository menuItemRepository;
     private final RedisTemplate<String, Object> redisTemplate;
-    private final ObjectMapper objectMapper;
+    private final UserContextHandler userContextHandler;
 
     public Order createOrder(OrderCreateRequest orderCreateRequest) {
         Order order = new Order();
-        Customer customer = this.customerRepository.findById(orderCreateRequest.getCustomerId());
+        Customer customer = this.userContextHandler.getCustomUserDetails().getCustomer();
         Restaurant restaurant = this.restaurantRepository.findById(orderCreateRequest.getRestaurantId());
         Address address = this.addressRepository.findById(orderCreateRequest.getAddressId());
 

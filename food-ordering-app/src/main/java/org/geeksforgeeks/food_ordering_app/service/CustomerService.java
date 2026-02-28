@@ -4,6 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.geeksforgeeks.food_ordering_app.dto.request.CustomerCreateRequest;
 import org.geeksforgeeks.food_ordering_app.entities.Customer;
 import org.geeksforgeeks.food_ordering_app.repository.CustomerRepository;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +21,7 @@ import java.util.UUID;
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public Customer createCustomer(CustomerCreateRequest customerCreateRequest) {
@@ -24,7 +30,7 @@ public class CustomerService {
                 .lastName(customerCreateRequest.getLastName())
                 .email(customerCreateRequest.getEmail())
                 .mobile(customerCreateRequest.getMobile())
-                .password(customerCreateRequest.getPassword())
+                .password(this.passwordEncoder.encode(customerCreateRequest.getPassword()))
                 .build();
         
         return this.customerRepository.save(customer);
@@ -34,7 +40,7 @@ public class CustomerService {
         return this.customerRepository.findById(id);
     }
 
-    public Optional<Customer> getCustomerByEmail(String email) {
+    public Customer getCustomerByEmail(String email) {
         return this.customerRepository.findByEmail(email);
     }
 

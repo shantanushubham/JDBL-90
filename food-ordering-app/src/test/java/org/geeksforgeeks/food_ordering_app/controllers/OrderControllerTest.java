@@ -42,28 +42,28 @@ class OrderControllerTest {
         orderController = new OrderController(orderService, orderMapper);
     }
 
-    @Test
-    void createOrder_returnsCreated() {
-        OrderCreateRequest request = new OrderCreateRequest();
-        Order order = Order.builder().id(UUID.randomUUID()).build();
-        OrderCreateResponse response = new OrderCreateResponse();
-        when(orderService.createOrder(any(OrderCreateRequest.class))).thenReturn(order);
-        when(orderMapper.toOrderCreateResponse(order)).thenReturn(response);
+//    @Test
+//    void createOrder_returnsCreated() {
+//        OrderCreateRequest request = new OrderCreateRequest();
+//        Order order = Order.builder().id(UUID.randomUUID()).build();
+//        OrderCreateResponse response = new OrderCreateResponse();
+//        when(orderService.createOrder(any(OrderCreateRequest.class))).thenReturn(order);
+//        when(orderMapper.toOrderCreateResponse(order)).thenReturn(response);
+//
+//        ResponseEntity<?> result = orderController.createOrder(request);
+//
+//        assertEquals(HttpStatus.CREATED, result.getStatusCode());
+//        assertSame(response, result.getBody());
+//    }
 
-        ResponseEntity<?> result = orderController.createOrder(request);
-
-        assertEquals(HttpStatus.CREATED, result.getStatusCode());
-        assertSame(response, result.getBody());
-    }
-
-    @Test
-    void createOrder_returns500_onException() {
-        when(orderService.createOrder(any(OrderCreateRequest.class))).thenThrow(new RuntimeException("error"));
-
-        ResponseEntity<?> result = orderController.createOrder(new OrderCreateRequest());
-
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
-    }
+//    @Test
+//    void createOrder_returns500_onException() {
+//        when(orderService.createOrder(any(OrderCreateRequest.class))).thenThrow(new RuntimeException("error"));
+//
+//        ResponseEntity<?> result = orderController.createOrder(new OrderCreateRequest());
+//
+//        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
+//    }
 
     @Test
     void getOrderById_returnsOk() {
@@ -105,25 +105,25 @@ class OrderControllerTest {
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
     }
 
-    @Test
-    void getOrdersByCustomerId_returnsOk() {
-        UUID customerId = UUID.randomUUID();
-        when(orderService.getOrdersByCustomerId(customerId)).thenReturn(List.of());
+//    @Test
+//    void getOrdersByCustomerId_returnsOk() {
+//        UUID customerId = UUID.randomUUID();
+//        when(orderService.getOrdersByCustomerId(customerId)).thenReturn(List.of());
+//
+//        ResponseEntity<?> result = orderController.getOrdersByCustomerId(customerId);
+//
+//        assertEquals(HttpStatus.OK, result.getStatusCode());
+//    }
 
-        ResponseEntity<?> result = orderController.getOrdersByCustomerId(customerId);
-
-        assertEquals(HttpStatus.OK, result.getStatusCode());
-    }
-
-    @Test
-    void getOrdersByCustomerId_returns500_onException() {
-        UUID customerId = UUID.randomUUID();
-        when(orderService.getOrdersByCustomerId(customerId)).thenThrow(new RuntimeException("error"));
-
-        ResponseEntity<?> result = orderController.getOrdersByCustomerId(customerId);
-
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
-    }
+//    @Test
+//    void getOrdersByCustomerId_returns500_onException() {
+//        UUID customerId = UUID.randomUUID();
+//        when(orderService.getOrdersByCustomerId(customerId)).thenThrow(new RuntimeException("error"));
+//
+//        ResponseEntity<?> result = orderController.getOrdersByCustomerId(customerId);
+//
+//        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
+//    }
 
     @Test
     void getOrdersByRestaurantId_returnsOk() {

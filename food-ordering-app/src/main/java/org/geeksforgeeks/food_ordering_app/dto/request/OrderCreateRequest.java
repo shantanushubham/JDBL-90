@@ -8,7 +8,6 @@ import java.util.UUID;
 @Data
 public class OrderCreateRequest {
 
-    private UUID customerId;
     private UUID restaurantId;
     private List<OrderItemCreateRequest> itemQuantityList;
     private UUID addressId;
