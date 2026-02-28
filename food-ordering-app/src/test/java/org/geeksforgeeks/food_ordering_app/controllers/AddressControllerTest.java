@@ -1,17 +1,19 @@
 package org.geeksforgeeks.food_ordering_app.controllers;
 
 import org.geeksforgeeks.food_ordering_app.entities.Address;
+import org.geeksforgeeks.food_ordering_app.entities.Customer;
 import org.geeksforgeeks.food_ordering_app.exceptions.NotFoundException;
+import org.geeksforgeeks.food_ordering_app.model.CustomUserDetails;
 import org.geeksforgeeks.food_ordering_app.service.AddressService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,21 +37,19 @@ class AddressControllerTest {
 
     @Test
     void createAddress_returnsCreated() {
-        UUID customerId = UUID.randomUUID();
         Address address = new Address();
-        when(addressService.createAddress(eq(customerId), any(Address.class))).thenReturn(address);
+        when(addressService.createAddress(any(Address.class))).thenReturn(address);
 
-        ResponseEntity<?> result = addressController.createAddress(customerId, new Address());
+        ResponseEntity<?> result = addressController.createAddress(new Address());
 
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
     }
 
     @Test
     void createAddress_returns500_onException() {
-        UUID customerId = UUID.randomUUID();
-        when(addressService.createAddress(eq(customerId), any(Address.class))).thenThrow(new RuntimeException("err"));
+        when(addressService.createAddress(any(Address.class))).thenThrow(new RuntimeException("err"));
 
-        ResponseEntity<?> result = addressController.createAddress(customerId, new Address());
+        ResponseEntity<?> result = addressController.createAddress(new Address());
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
     }
@@ -87,21 +87,15 @@ class AddressControllerTest {
     @Test
     void getAllAddressesForCustomer_returnsOk() {
         UUID customerId = UUID.randomUUID();
-        when(addressService.getAllAddressesForCustomer(customerId)).thenReturn(List.of());
+        CustomUserDetails customUserDetails = Mockito
+                .mock(CustomUserDetails.class);
+        Customer customer = new Customer();
+        customer.setId(customerId);
+        when(customUserDetails.getCustomer()).thenReturn(customer);
 
-        ResponseEntity<?> result = addressController.getAllAddressesForCustomer(customerId);
+        ResponseEntity<?> result = addressController.getAllAddressesForCustomer(customUserDetails);
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
-    }
-
-    @Test
-    void getAllAddressesForCustomer_returns500_onException() {
-        UUID customerId = UUID.randomUUID();
-        when(addressService.getAllAddressesForCustomer(customerId)).thenThrow(new RuntimeException("err"));
-
-        ResponseEntity<?> result = addressController.getAllAddressesForCustomer(customerId);
-
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
     }
 
     @Test

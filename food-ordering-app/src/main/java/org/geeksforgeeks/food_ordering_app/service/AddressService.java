@@ -1,16 +1,14 @@
 package org.geeksforgeeks.food_ordering_app.service;
 
 import lombok.RequiredArgsConstructor;
+import org.geeksforgeeks.food_ordering_app.auth.UserContextHandler;
 import org.geeksforgeeks.food_ordering_app.entities.Address;
 import org.geeksforgeeks.food_ordering_app.entities.Customer;
-import org.geeksforgeeks.food_ordering_app.exceptions.NotFoundException;
 import org.geeksforgeeks.food_ordering_app.repository.AddressRepository;
-import org.geeksforgeeks.food_ordering_app.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -18,11 +16,11 @@ import java.util.UUID;
 public class AddressService {
 
     private final AddressRepository addressRepository;
-    private final CustomerRepository customerRepository;
+    private final UserContextHandler userContextHandler;
 
     @Transactional
-    public Address createAddress(UUID customerId, Address address) {
-        Customer customer = this.customerRepository.findById(customerId);
+    public Address createAddress(Address address) {
+        Customer customer = this.userContextHandler.getCustomUserDetails().getCustomer();
         address.setCustomer(customer);
         return this.addressRepository.save(address);
     }

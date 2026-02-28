@@ -10,7 +10,6 @@ import org.geeksforgeeks.food_ordering_app.service.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -56,7 +55,7 @@ public class OrderController {
     @GetMapping("/customer")
     public ResponseEntity<?> getOrdersByCustomerId(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         try {
-            List<Order> orders = this.orderService.getOrdersByCustomerId(customUserDetails.getCustomer().getId());
+            List<Order> orders = customUserDetails.getCustomer().getOrders();
             return new ResponseEntity<>(orders, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

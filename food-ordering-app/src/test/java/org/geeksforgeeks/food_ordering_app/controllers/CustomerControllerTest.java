@@ -50,21 +50,31 @@ class CustomerControllerTest {
     }
 
     @Test
-    void getCustomerById_returnsOk() {
+    void getCustomer_returnsOk() {
         UUID id = UUID.randomUUID();
+        org.geeksforgeeks.food_ordering_app.model.CustomUserDetails customUserDetails = org.mockito.Mockito
+                .mock(org.geeksforgeeks.food_ordering_app.model.CustomUserDetails.class);
+        org.geeksforgeeks.food_ordering_app.entities.Customer customerMock = new org.geeksforgeeks.food_ordering_app.entities.Customer();
+        customerMock.setId(id);
+        when(customUserDetails.getCustomer()).thenReturn(customerMock);
         when(customerService.getCustomerById(id)).thenReturn(Customer.builder().id(id).build());
 
-        ResponseEntity<?> result = customerController.getCustomerById(id);
+        ResponseEntity<?> result = customerController.getCustomer(customUserDetails);
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
     }
 
     @Test
-    void getCustomerById_returns500_onException() {
+    void getCustomer_returns500_onException() {
         UUID id = UUID.randomUUID();
+        org.geeksforgeeks.food_ordering_app.model.CustomUserDetails customUserDetails = org.mockito.Mockito
+                .mock(org.geeksforgeeks.food_ordering_app.model.CustomUserDetails.class);
+        org.geeksforgeeks.food_ordering_app.entities.Customer customerMock = new org.geeksforgeeks.food_ordering_app.entities.Customer();
+        customerMock.setId(id);
+        when(customUserDetails.getCustomer()).thenReturn(customerMock);
         when(customerService.getCustomerById(id)).thenThrow(new RuntimeException("err"));
 
-        ResponseEntity<?> result = customerController.getCustomerById(id);
+        ResponseEntity<?> result = customerController.getCustomer(customUserDetails);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
     }

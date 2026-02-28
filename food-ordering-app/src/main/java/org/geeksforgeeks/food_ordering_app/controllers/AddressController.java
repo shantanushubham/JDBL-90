@@ -3,9 +3,11 @@ package org.geeksforgeeks.food_ordering_app.controllers;
 import lombok.RequiredArgsConstructor;
 import org.geeksforgeeks.food_ordering_app.entities.Address;
 import org.geeksforgeeks.food_ordering_app.exceptions.NotFoundException;
+import org.geeksforgeeks.food_ordering_app.model.CustomUserDetails;
 import org.geeksforgeeks.food_ordering_app.service.AddressService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,12 +20,11 @@ public class AddressController {
 
     private final AddressService addressService;
 
-    @PostMapping("/{customerId}")
+    @PostMapping
     public ResponseEntity<?> createAddress(
-            @PathVariable UUID customerId,
             @RequestBody Address address) {
         try {
-            Address createdAddress = this.addressService.createAddress(customerId, address);
+            Address createdAddress = this.addressService.createAddress(address);
             return new ResponseEntity<>(createdAddress, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -42,10 +43,10 @@ public class AddressController {
         }
     }
 
-    @GetMapping("/customer/{customerId}")
-    public ResponseEntity<?> getAllAddressesForCustomer(@PathVariable UUID customerId) {
+    @GetMapping("/customer")
+    public ResponseEntity<?> getAllAddressesForCustomer(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         try {
-            List<Address> addresses = this.addressService.getAllAddressesForCustomer(customerId);
+            List<Address> addresses = customUserDetails.getCustomer().getAddresses();
             return new ResponseEntity<>(addresses, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

@@ -2,21 +2,19 @@ package org.geeksforgeeks.food_ordering_app.service;
 
 import org.geeksforgeeks.food_ordering_app.dto.request.CustomerCreateRequest;
 import org.geeksforgeeks.food_ordering_app.entities.Customer;
-import org.geeksforgeeks.food_ordering_app.exceptions.NotFoundException;
 import org.geeksforgeeks.food_ordering_app.repository.CustomerRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -25,6 +23,9 @@ class CustomerServiceTest {
 
     @Mock
     private CustomerRepository customerRepository;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private CustomerService customerService;
@@ -38,6 +39,7 @@ class CustomerServiceTest {
         request.setMobile("123");
         request.setPassword("pass");
         Customer saved = Customer.builder().id(UUID.randomUUID()).build();
+        when(passwordEncoder.encode(any(CharSequence.class))).thenReturn("encoded");
         when(customerRepository.save(any(Customer.class))).thenReturn(saved);
 
         Customer result = customerService.createCustomer(request);
@@ -57,12 +59,13 @@ class CustomerServiceTest {
         assertSame(customer, result);
     }
 
-//    @Test
-//    void getCustomerByEmail_returnsOptional() {
-//        when(customerRepository.findByEmail("a@b.com")).thenThrow(NotFoundException.class);
-//
-//        assertThrows(NotFoundException, customerService.getCustomerByEmail("a@b.com").isEmpty());
-//    }
+    // @Test
+    // void getCustomerByEmail_returnsOptional() {
+    // when(customerRepository.findByEmail("a@b.com")).thenThrow(NotFoundException.class);
+    //
+    // assertThrows(NotFoundException,
+    // customerService.getCustomerByEmail("a@b.com").isEmpty());
+    // }
 
     @Test
     void getAllCustomers_returnsList() {

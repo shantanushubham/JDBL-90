@@ -8,13 +8,9 @@ import org.geeksforgeeks.food_ordering_app.dto.response.MostOrderedItemResponse;
 import org.geeksforgeeks.food_ordering_app.entities.*;
 import org.geeksforgeeks.food_ordering_app.repository.*;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDateTime;
 import java.util.*;

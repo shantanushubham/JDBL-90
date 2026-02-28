@@ -1,7 +1,6 @@
 package org.geeksforgeeks.food_ordering_app.config;
 
 import org.geeksforgeeks.food_ordering_app.dto.response.MostOrderedItemResponse;
-import org.jspecify.annotations.Nullable;
 import org.springframework.cache.Cache;
 import org.springframework.cache.interceptor.CacheErrorHandler;
 import org.springframework.context.annotation.Bean;

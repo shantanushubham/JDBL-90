@@ -10,10 +10,17 @@ public class UserContextHandler {
 
     public CustomUserDetails getCustomUserDetails() {
         Authentication authentication = this.getAuthentication();
-        return (CustomUserDetails) authentication.getPrincipal();
+        if (authentication == null) {
+            return null;
+        }
+        Object object = authentication.getPrincipal();
+        if (object instanceof CustomUserDetails customUserDetails) {
+            return customUserDetails;
+        }
+        return null;
     }
 
-    private Authentication getAuthentication() {
+    public Authentication getAuthentication() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 

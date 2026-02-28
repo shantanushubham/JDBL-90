@@ -4,16 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.geeksforgeeks.food_ordering_app.dto.request.CustomerCreateRequest;
 import org.geeksforgeeks.food_ordering_app.entities.Customer;
 import org.geeksforgeeks.food_ordering_app.repository.CustomerRepository;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service

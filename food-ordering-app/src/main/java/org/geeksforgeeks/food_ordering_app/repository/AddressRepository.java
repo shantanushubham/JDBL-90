@@ -7,7 +7,6 @@ import org.geeksforgeeks.food_ordering_app.repository.jpa.AddressJpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Repository

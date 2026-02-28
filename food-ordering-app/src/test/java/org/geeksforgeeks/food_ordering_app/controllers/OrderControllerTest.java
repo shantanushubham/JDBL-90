@@ -1,8 +1,6 @@
 package org.geeksforgeeks.food_ordering_app.controllers;
 
-import org.geeksforgeeks.food_ordering_app.dto.request.OrderCreateRequest;
 import org.geeksforgeeks.food_ordering_app.dto.response.MostOrderedItemResponse;
-import org.geeksforgeeks.food_ordering_app.dto.response.OrderCreateResponse;
 import org.geeksforgeeks.food_ordering_app.entities.Order;
 import org.geeksforgeeks.food_ordering_app.entities.OrderStatus;
 import org.geeksforgeeks.food_ordering_app.mapper.OrderMapper;
@@ -19,12 +17,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class OrderControllerTest {

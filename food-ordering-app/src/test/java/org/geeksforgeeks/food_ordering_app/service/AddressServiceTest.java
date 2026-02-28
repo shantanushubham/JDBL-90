@@ -1,9 +1,9 @@
 package org.geeksforgeeks.food_ordering_app.service;
 
+import org.geeksforgeeks.food_ordering_app.auth.UserContextHandler;
 import org.geeksforgeeks.food_ordering_app.entities.Address;
 import org.geeksforgeeks.food_ordering_app.entities.Customer;
 import org.geeksforgeeks.food_ordering_app.repository.AddressRepository;
-import org.geeksforgeeks.food_ordering_app.repository.CustomerRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -26,7 +24,7 @@ class AddressServiceTest {
     private AddressRepository addressRepository;
 
     @Mock
-    private CustomerRepository customerRepository;
+    private UserContextHandler userContextHandler;
 
     @InjectMocks
     private AddressService addressService;
@@ -35,11 +33,16 @@ class AddressServiceTest {
     void createAddress_setsCustomerAndSaves() {
         UUID customerId = UUID.randomUUID();
         Customer customer = new Customer();
+        customer.setId(customerId);
         Address address = new Address();
-        when(customerRepository.findById(customerId)).thenReturn(customer);
+
+        org.geeksforgeeks.food_ordering_app.model.CustomUserDetails customUserDetails = org.mockito.Mockito
+                .mock(org.geeksforgeeks.food_ordering_app.model.CustomUserDetails.class);
+        when(customUserDetails.getCustomer()).thenReturn(customer);
+        when(userContextHandler.getCustomUserDetails()).thenReturn(customUserDetails);
         when(addressRepository.save(address)).thenReturn(address);
 
-        Address result = addressService.createAddress(customerId, address);
+        Address result = addressService.createAddress(address);
 
         assertSame(address, result);
         verify(addressRepository).save(address);
