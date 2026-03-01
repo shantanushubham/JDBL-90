@@ -29,3 +29,10 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+.env
+*/*.env
+
+### Microservices ###
+microservices/subtraction-service/node_modules
+microservices/multiplication-service/__pycache__
+microservices/multiplication-service/.venv

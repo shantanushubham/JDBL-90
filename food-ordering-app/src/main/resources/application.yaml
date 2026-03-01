@@ -4,8 +4,8 @@ spring:
 
   datasource:
     url: jdbc:postgresql://localhost:5433/food_app
-    username: myuser
-    password: mypassword
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
@@ -26,8 +26,19 @@ spring:
     cache:
       type: redis
 
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: ${GITHUB_CLIENT_ID}
+            client-secret: ${GITHUB_CLIENT_SECRET}
+            scope:
+              - read:user
+              - user:email
+
 jwt:
-  secret: SflKxwRJSMeKKF2QT4fwpMeJf513POk6yJV_adQssw5c
+  secret: ${JWT_SECRET}
   expiration-ms: 86400000
 
 logging:
