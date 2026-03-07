@@ -1,10 +1,11 @@
 package com.example.aggregator_service.feign;
 
+import com.example.aggregator_service.fallback.SubstractionFallback;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "substraction-client", url = "http://localhost:3000")
+@FeignClient(name = "substraction-client", url = "http://localhost:3000", fallback = SubstractionFallback.class)
 public interface SubstractionClient {
 
     @GetMapping("/subtract")
