@@ -36,3 +36,5 @@ bin/
 microservices/subtraction-service/node_modules
 microservices/multiplication-service/__pycache__
 microservices/multiplication-service/.venv
+microservices/mock-bank-service/node_modules
+microservices/digital_wallet/frontend/node_modules

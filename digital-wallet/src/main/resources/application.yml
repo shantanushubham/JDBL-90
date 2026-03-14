@@ -26,9 +26,13 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: "org.geeksforgeeks.digitalwallet.kafka"
+        spring.json.value.default.type: "org.geeksforgeeks.digitalwallet.kafka.RewardEvent"
+        spring.json.use.type.headers: false
 
 app:
   jwt:
     secret: VGhpcyBpcyBhIHNlY3VyZSBzZWNyZXQga2V5IGZvciBzZWN1cml0eSBwdXJwb3NlcyBvbmx5IQ==
   kafka:
     reward-topic: wallet.rewards
+  bank:
+    service-url: http://localhost:8085
